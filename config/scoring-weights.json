@@ -1,0 +1,103 @@
+{
+  "_comment": "All scoring behavior is configured here. Nothing in scoring.service.ts is hardcoded — change these values (or point SCORING_CONFIG_PATH at a different file) to change how products are ranked, without touching code.",
+
+  "_finalScoreWeightsComment": "Must sum to 1.0, and all seven keys are required. Weights apply only to sub-scores that are NOT null for a given product; the remaining weights are renormalized proportionally so a product missing one optional signal isn't unfairly punished — see computeFinalScore() in scoring-functions.ts.",
+  "finalScoreWeights": {
+    "demand": 0.25,
+    "profitability": 0.20,
+    "competitionOpportunity": 0.15,
+    "differentiation": 0.15,
+    "shippingSimplicity": 0.10,
+    "customerPainOpportunity": 0.05,
+    "bundleExpansion": 0.10
+  },
+
+  "demandScore": {
+    "_comment": "demand_score = 0.7 * normalized(ln(review_count+1) within category cohort) + 0.3 * (avg_rating/5*100). Requires review_count AND avg_rating; otherwise null.",
+    "reviewVolumeWeight": 0.7,
+    "ratingWeight": 0.3
+  },
+
+  "competitionOpportunityScore": {
+    "_comment": "competitionOpportunityScore = 100 - normalized(competitor_count within category cohort) - establishedBrandDominancePenalty (if flagged). 100 = attractive/low-competition environment, 0 = brutal/high-competition. Requires competitor_count; otherwise null.",
+    "establishedBrandDominancePenalty": 20
+  },
+
+  "differentiationScore": {
+    "_comment": "differentiationScore = min(distinct_opportunity_count * pointsPerOpportunity, 100). Requires at least one product_pain_points row (of any type) to exist for the product to distinguish 'not researched' (null) from 'researched, zero opportunities found' (0).",
+    "pointsPerOpportunity": 20
+  },
+
+  "customerPainOpportunityScore": {
+    "_comment": "customerPainOpportunityScore = min(complaint_count * pointsPerComplaint, 100). More documented complaints on competing listings = more room to win by fixing them. Requires at least one pain_points row to exist; otherwise null.",
+    "pointsPerComplaint": 15
+  },
+
+  "shippingSimplicityScore": {
+    "_comment": "100 minus penalties. Requires weight_kg; otherwise null.",
+    "fragilePenalty": 25,
+    "weightPenaltyBandsKg": [
+      { "maxKg": 0.5, "penalty": 0 },
+      { "maxKg": 1, "penalty": 10 },
+      { "maxKg": 2, "penalty": 25 },
+      { "maxKg": 5, "penalty": 45 },
+      { "maxKg": null, "penalty": 70 }
+    ],
+    "volumetricPenaltyBandsCm3": [
+      { "maxCm3": 3000, "penalty": 0 },
+      { "maxCm3": 15000, "penalty": 10 },
+      { "maxCm3": 50000, "penalty": 25 },
+      { "maxCm3": null, "penalty": 45 }
+    ]
+  },
+
+  "bundleExpansionScore": {
+    "_comment": "Manual override (products.bundle_potential_score, entered by the researcher) always wins. Otherwise, fall back to a documented per-category baseline heuristic below. If the category isn't listed and there's no manual value, the score is null (never fabricated).",
+    "categoryBaselines": {
+      "home-organization": 75,
+      "kitchen-organization": 75,
+      "desk-office-organization": 70,
+      "storage-products": 75,
+      "travel-accessories": 65,
+      "sb-packaging": 70,
+      "baby-organization": 60,
+      "car-accessories": 45,
+      "bike-accessories": 45,
+      "mobile-accessories": 55,
+      "laptop-accessories": 50,
+      "fitness-accessories": 55,
+      "pet-accessories": 60,
+      "gardening-accessories": 50,
+      "cleaning-products": 60
+    }
+  },
+
+  "profitabilityScore": {
+    "_comment": "profitabilityScore = clamp(0-100) of profit_margin_percentage scaled linearly between marginFloorPct (->0) and marginCeilingPct (->100). Requires a computed profitability result; otherwise null.",
+    "marginFloorPct": 0,
+    "marginCeilingPct": 50
+  },
+
+  "riskScore": {
+    "_comment": "risk_score is 0-100 (higher = riskier) and is NOT part of final_score. It drives classification alongside final_score. Each triggered penalty is recorded in risk_reasons so the score is always traceable.",
+    "fragilePenalty": 20,
+    "heavyOrBulkyPenalty": 15,
+    "heavyOrBulkyShippingSimplicityThreshold": 50,
+    "lowMarginPenalty": 20,
+    "lowMarginThresholdPct": 10,
+    "highCompetitionPenalty": 20,
+    "highCompetitionOpportunityThreshold": 40,
+    "establishedBrandDominancePenalty": 15,
+    "returnRiskPenalty": { "low": 0, "medium": 10, "high": 25 },
+    "regulatoryComplexityPenalty": { "none": 0, "low": 5, "medium": 15, "high": 30 },
+    "brandIpRiskPenalty": 25,
+    "seasonalDemandPenalty": 10
+  },
+
+  "classification": {
+    "_comment": "A/B/C thresholds, evaluated in order.",
+    "strongCandidate": { "minFinalScore": 70, "maxRiskScore": 40 },
+    "needsValidation": { "minFinalScore": 50 },
+    "weakCandidateRiskOverride": { "minRiskScore": 70 }
+  }
+}

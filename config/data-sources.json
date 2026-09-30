@@ -1,0 +1,124 @@
+{
+  "_comment": "Registry of data sources this system can collect from. Add a source here and implement its adapter; nothing in normalization, profitability, demand, competition or scoring changes. A source is only usable when enabled=true AND every entry in requiredEnv is set.",
+  "_researchedAt": "2026-09-29",
+  "_researchWarning": "availability, pricing and limits below were researched on the date above and change often. Re-verify against each provider's own documentation before relying on them. Nothing here is a legal opinion.",
+
+  "sources": [
+    {
+      "key": "manual_csv",
+      "label": "Manual CSV / JSON research",
+      "adapter": "ManualCsvAdapter",
+      "kind": "manual",
+      "enabled": true,
+      "requiredEnv": [],
+      "provides": ["product", "pricing", "demand_signals", "competition_signals", "review_observations"],
+      "capabilities": { "searchProducts": false, "getProductDetails": false, "getPricing": false, "getReviews": false, "getCategories": false },
+      "accessRequirements": "None. A person records what they observed and submits it.",
+      "pricing": "Free",
+      "rateLimits": "None",
+      "termsNotes": "Only submit data you are permitted to collect and store. This adapter makes no network requests.",
+      "automated": false
+    },
+
+    {
+      "key": "keepa",
+      "label": "Keepa API",
+      "adapter": "KeepaAdapter",
+      "kind": "licensed_api",
+      "enabled": false,
+      "requiredEnv": ["KEEPA_API_KEY"],
+      "docsUrl": "https://keepa.com/api-docs/",
+      "provides": ["product", "pricing", "price_history", "offers", "buy_box", "category_tree"],
+      "capabilities": { "searchProducts": true, "getProductDetails": true, "getPricing": true, "getReviews": false, "getCategories": true },
+      "accessRequirements": "Paid API subscription. No affiliate sales requirement. amazon.in is domain ID 10.",
+      "pricing": "From EUR 49/month (Starter) to EUR 11,099/month (Enterprise), as researched 2026-09-29.",
+      "rateLimits": "Token bucket refilled per minute (20/min on Starter). 1 token per ASIN; product search costs ~10 tokens per result page; offers and Buy Box cost extra tokens.",
+      "termsNotes": "Review Keepa's terms for redistribution limits before exporting or sharing collected data. Rating/review text is not part of the product payload.",
+      "automated": true
+    },
+
+    {
+      "key": "amazon_sp_api",
+      "label": "Amazon Selling Partner API (your own seller account)",
+      "adapter": "AmazonSpApiAdapter",
+      "kind": "official_api",
+      "enabled": false,
+      "requiredEnv": ["SPAPI_CLIENT_ID", "SPAPI_CLIENT_SECRET", "SPAPI_REFRESH_TOKEN"],
+      "docsUrl": "https://developer-docs.amazon.com/sp-api",
+      "provides": ["catalog", "competitive_pricing", "marketplace_fees"],
+      "capabilities": { "searchProducts": true, "getProductDetails": true, "getPricing": true, "getReviews": false, "getCategories": true },
+      "accessRequirements": "An Amazon.in seller account plus a registered SP-API application. Free.",
+      "pricing": "Free with a seller account",
+      "rateLimits": "Per-operation throttling with a token bucket, varies by endpoint.",
+      "termsNotes": "The Product Fees API returns Amazon's own fee estimates, which would replace the placeholder rates in marketplace-fees.seed.json. Data access is scoped to your selling account.",
+      "automated": true
+    },
+
+    {
+      "key": "amazon_creators_api",
+      "label": "Amazon Creators API (successor to PA-API)",
+      "adapter": "AmazonCreatorsAdapter",
+      "kind": "affiliate_api",
+      "enabled": false,
+      "requiredEnv": ["AMAZON_CREATORS_CLIENT_ID", "AMAZON_CREATORS_CLIENT_SECRET", "AMAZON_ASSOCIATE_TAG"],
+      "docsUrl": "https://affiliate-program.amazon.com/creatorsapi/docs/en-us/introduction",
+      "provides": ["product", "pricing", "images"],
+      "capabilities": { "searchProducts": true, "getProductDetails": true, "getPricing": true, "getReviews": false, "getCategories": true },
+      "accessRequirements": "Amazon Associates account for the target marketplace with at least 10 qualifying sales in the trailing 30 days. OAuth2 client credentials.",
+      "pricing": "Free, but gated behind affiliate sales volume",
+      "rateLimits": "Tied to affiliate sales volume; access is withdrawn if sales lapse.",
+      "termsNotes": "PA-API 5.0 is deprecated 2026-04-30 and retired 2026-05-15; Creators API replaces it. Affiliate API terms restrict use to promoting Amazon products — confirm that internal product research is a permitted use before relying on it.",
+      "automated": true
+    },
+
+    {
+      "key": "flipkart_affiliate",
+      "label": "Flipkart Affiliate API",
+      "adapter": "FlipkartAffiliateAdapter",
+      "kind": "affiliate_api",
+      "enabled": false,
+      "requiredEnv": ["FLIPKART_AFFILIATE_ID", "FLIPKART_AFFILIATE_TOKEN"],
+      "docsUrl": "https://affiliate.flipkart.com/api-docs/af_overview.html",
+      "provides": ["product", "pricing", "category_feeds"],
+      "capabilities": { "searchProducts": true, "getProductDetails": true, "getPricing": true, "getReviews": false, "getCategories": true },
+      "accessRequirements": "A registered Flipkart affiliate account and API token. Public affiliate sign-ups were reported discontinued as of 2026-09-29; existing affiliates retain API access.",
+      "pricing": "Free for registered affiliates",
+      "rateLimits": "Not published",
+      "termsNotes": "Several endpoints (delta feed, keyword search, product-id search, feed download) are documented as being deprecated. Confirm the program is open before planning around it.",
+      "automated": true
+    },
+
+    {
+      "key": "ondc",
+      "label": "ONDC (Open Network for Digital Commerce)",
+      "adapter": "OndcAdapter",
+      "kind": "open_network",
+      "enabled": false,
+      "requiredEnv": ["ONDC_SUBSCRIBER_ID", "ONDC_SIGNING_PRIVATE_KEY"],
+      "docsUrl": "https://saarthi.ondc.org/",
+      "provides": ["catalog_search", "pricing", "seller_info"],
+      "capabilities": { "searchProducts": true, "getProductDetails": true, "getPricing": true, "getReviews": false, "getCategories": true },
+      "accessRequirements": "Register as a Network Participant (buyer node). Requires business registration, GSTIN, KYC and bank details, plus signed-request key registration on the ONDC gateway.",
+      "pricing": "Free (network participation)",
+      "rateLimits": "Per ONDC network policy",
+      "termsNotes": "India-specific and genuinely open by design, but onboarding is substantial. Catalog breadth depends on which sellers are live on the network.",
+      "automated": true
+    },
+
+    {
+      "key": "third_party_collector",
+      "label": "Third-party collection providers (Rainforest, Oxylabs, SerpApi, …)",
+      "adapter": null,
+      "kind": "third_party_collector",
+      "enabled": false,
+      "requiredEnv": [],
+      "provides": ["product", "pricing", "search_results"],
+      "capabilities": { "searchProducts": true, "getProductDetails": true, "getPricing": true, "getReviews": false, "getCategories": false },
+      "accessRequirements": "Paid account with the provider.",
+      "pricing": "Rainforest from ~USD 18/month; Oxylabs from ~USD 49/month; SerpApi from ~USD 25 per 1,000 searches, as researched 2026-09-29.",
+      "rateLimits": "Credit or result based, per plan",
+      "termsNotes": "DELIBERATELY LEFT UNIMPLEMENTED. These providers obtain marketplace data by automated collection; a contract with the provider does not by itself make that collection permitted under the marketplace's own terms, and the resulting risk sits with you. Take your own legal advice before enabling this route.",
+      "automated": true
+    }
+  ]
+}

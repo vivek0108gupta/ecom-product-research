@@ -1,0 +1,53 @@
+{
+  "_comment": "SEED/PLACEHOLDER fee assumptions for local development and demo only. Marketplace commission and closing-fee schedules change over time and vary by exact sub-category. Before relying on these for real profitability decisions, verify current rates on the marketplace's own seller-fee pages and update these rows (or edit them directly in the marketplace_fees table) with the real 'source' URL and 'effective_date'. The app never hardcodes these in code — this file only seeds the database table.",
+  "fees": [
+    {
+      "marketplace": "amazon_in",
+      "category": "default",
+      "feeType": "referral_percentage",
+      "value": 15,
+      "source": "PLACEHOLDER - verify at https://sell.amazon.in/pricing before use",
+      "effectiveDate": "2026-01-01"
+    },
+    {
+      "marketplace": "amazon_in",
+      "category": "default",
+      "feeType": "closing_fee_fixed_inr",
+      "value": 20,
+      "source": "PLACEHOLDER - verify at https://sell.amazon.in/pricing before use",
+      "effectiveDate": "2026-01-01"
+    },
+    {
+      "marketplace": "flipkart",
+      "category": "default",
+      "feeType": "commission_percentage",
+      "value": 15,
+      "source": "PLACEHOLDER - verify at https://seller.flipkart.com/fk-seller-hub/fees before use",
+      "effectiveDate": "2026-01-01"
+    },
+    {
+      "marketplace": "flipkart",
+      "category": "default",
+      "feeType": "collection_fee_percentage",
+      "value": 2,
+      "source": "PLACEHOLDER - verify at https://seller.flipkart.com/fk-seller-hub/fees before use",
+      "effectiveDate": "2026-01-01"
+    },
+    {
+      "marketplace": "meesho",
+      "category": "default",
+      "feeType": "commission_percentage",
+      "value": 10,
+      "source": "PLACEHOLDER - verify at https://supplier.meesho.com before use",
+      "effectiveDate": "2026-01-01"
+    },
+    {
+      "marketplace": "own_store",
+      "category": "default",
+      "feeType": "payment_gateway_percentage",
+      "value": 2,
+      "source": "PLACEHOLDER - typical Indian payment gateway rate, verify with your provider",
+      "effectiveDate": "2026-01-01"
+    }
+  ]
+}

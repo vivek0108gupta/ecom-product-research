@@ -1,0 +1,117 @@
+{
+  "_README": [
+    "SCHEMA FIXTURE — NOT REAL MARKET DATA, NOT A REAL PRODUCT, NOT A REAL ASIN.",
+    "Its only purpose is to exercise the Keepa response -> NormalizedProduct mapping offline.",
+    "The SHAPE follows Keepa's published product object (keepa.com/api-docs/product-object.html,",
+    "checked 2026-09-29): csv index meanings, Keepa Time minutes, prices in the smallest",
+    "currency unit, -1 as the no-value sentinel, availabilityAmazon codes, productType.",
+    "The VALUES are deliberately round placeholders (₹1000.00, 4.0 stars, 100 reviews, rank 1000)",
+    "so they can never be mistaken for an observation about any real listing.",
+    "Nothing derived from this fixture is ever written to the database."
+  ],
+  "_keepaTimeNote": "Keepa Time minutes. 7100000 -> (7100000 + 21564000) * 60000 ms.",
+
+  "timestamp": 1790000000000,
+  "tokensLeft": 1180,
+  "refillIn": 42000,
+  "refillRate": 20,
+  "tokensConsumed": 3,
+  "processingTimeInMs": 120,
+
+  "products": [
+    {
+      "asin": "B0FIXTURE1",
+      "domainId": 10,
+      "productType": 0,
+      "title": "FIXTURE PRODUCT — schema placeholder, not a real listing",
+      "brand": "FIXTURE_BRAND",
+      "manufacturer": "FIXTURE_BRAND",
+
+      "csv": [
+        [7099000, 110000, 7099500, 105000, 7100000, 100000],
+        [7099000, 108000, 7100000, 99000],
+        null,
+        [7099000, 1200, 7099500, 1100, 7100000, 1000],
+        [7099000, 200000, 7100000, 200000],
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        [7099000, 4, 7100000, 5],
+        [7099000, 0, 7100000, 0],
+        null,
+        null,
+        null,
+        [7099000, 38, 7100000, 40],
+        [7099000, 90, 7100000, 100],
+        [7099000, 101000, 7100000, 100000]
+      ],
+
+      "stats": {
+        "current": [100000, 99000, -1, 1000, 200000, -1, -1, -1, -1, -1, -1, 5, 0, -1, -1, -1, 40, 100, 100000],
+        "avg30": [102000, 101000, -1, 1100, 200000],
+        "avg90": [104000, 103000, -1, 1150, 200000],
+        "min": [[7099000, 99000], [7099000, 98000], null, [7100000, 1000]],
+        "max": [[7099000, 110000], [7099000, 109000], null, [7099000, 1200]],
+        "buyBoxPrice": 100000,
+        "buyBoxShipping": 0,
+        "buyBoxIsFBA": true,
+        "salesRankDrops30": 10,
+        "salesRankDrops90": 30,
+        "outOfStockPercentage30": 0,
+        "outOfStockPercentage90": 0
+      },
+
+      "images": [{ "l": "FIXTUREIMAGE1.jpg", "m": "FIXTUREIMAGE1._SL500_.jpg" }],
+      "categories": [1000000, 1000001],
+      "categoryTree": [
+        { "catId": 1000000, "name": "FIXTURE_ROOT_CATEGORY" },
+        { "catId": 1000001, "name": "FIXTURE_LEAF_CATEGORY" }
+      ],
+      "rootCategory": 1000000,
+      "salesRanks": { "1000001": [7099000, 1200, 7100000, 1000] },
+      "salesRankReference": 1000001,
+
+      "availabilityAmazon": 0,
+      "lastUpdate": 7100000,
+      "lastPriceChange": 7100000,
+
+      "packageLength": 300,
+      "packageWidth": 200,
+      "packageHeight": 100,
+      "packageWeight": 1000,
+
+      "features": ["FIXTURE_FEATURE_A", "FIXTURE_FEATURE_B"],
+      "description": "FIXTURE description. Placeholder text, not a real product description.",
+      "color": "FIXTURE_COLOR",
+      "size": "FIXTURE_SIZE"
+    },
+
+    {
+      "_case": "no current price anywhere — must be reported unusable, never priced at 0",
+      "asin": "B0FIXTURE2",
+      "domainId": 10,
+      "productType": 0,
+      "title": "FIXTURE PRODUCT 2 — out of stock, no offers",
+      "csv": [null, null, null, [7099000, 5000], null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+      "stats": {
+        "current": [-1, -1, -1, 5000, -1, -1, -1, -1, -1, -1, -1, 0, 0, -1, -1, -1, -1, -1, -1],
+        "buyBoxPrice": -1,
+        "buyBoxShipping": -2
+      },
+      "availabilityAmazon": -1,
+      "lastUpdate": 7100000
+    },
+
+    {
+      "_case": "productType 4 (INVALID) — must be rejected before any field is trusted",
+      "asin": "B0FIXTURE3",
+      "domainId": 10,
+      "productType": 4,
+      "title": "FIXTURE PRODUCT 3 — invalid product type",
+      "lastUpdate": 7100000
+    }
+  ]
+}

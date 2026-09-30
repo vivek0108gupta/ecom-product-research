@@ -1,0 +1,20 @@
+{
+  "_comment": "Add new product categories here without touching application code. 'slug' must be unique and stable — it is referenced by scoring/fee config and stored on products.category.",
+  "categories": [
+    { "slug": "car-accessories", "label": "Car Accessories" },
+    { "slug": "bike-accessories", "label": "Bike Accessories" },
+    { "slug": "travel-accessories", "label": "Travel Accessories" },
+    { "slug": "home-organization", "label": "Home Organization" },
+    { "slug": "kitchen-organization", "label": "Kitchen Organization" },
+    { "slug": "cleaning-products", "label": "Cleaning Products/Tools" },
+    { "slug": "desk-office-organization", "label": "Desk/Office Organization" },
+    { "slug": "laptop-accessories", "label": "Laptop Accessories" },
+    { "slug": "mobile-accessories", "label": "Mobile Accessories" },
+    { "slug": "fitness-accessories", "label": "Fitness Accessories" },
+    { "slug": "pet-accessories", "label": "Pet Accessories" },
+    { "slug": "gardening-accessories", "label": "Gardening Accessories" },
+    { "slug": "storage-products", "label": "Storage Products" },
+    { "slug": "baby-organization", "label": "Baby Organization Accessories" },
+    { "slug": "sb-packaging", "label": "Small-Business Packaging Products" }
+  ]
+}
